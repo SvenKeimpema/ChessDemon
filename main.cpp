@@ -2,13 +2,29 @@
 using namespace std;
 
 #define ULL unsigned long long
-#define getBit(bb, sq) (bb & (1ULL << sq))
-#define setBit(bb, sq) (bb | (1ULL << sq))
+#define getBit(bb, sq) (0 <= sq && sq < 64 ? bb & (1ULL << sq) : 0)
+#define setBit(bb, sq) (0 <= sq && sq < 64 ? bb | (1ULL << sq) : bb)
 
 #define AFILE 72340172838076673ULL
 #define ABFILE 217020518514230019ULL
 #define HFILE 9259542123273814144ULL
-#define GHFile 13889313184910721216ULL
+#define GHFILE 13889313184910721216ULL
+
+ULL getKnight(int sq) {
+    ULL attacks = 0ULL;
+
+    if(!getBit(ABFILE, sq-6)) attacks = setBit(attacks, sq-6);
+    if(!getBit(GHFILE, sq-10)) attacks = setBit(attacks, sq-10);
+    if(!getBit(AFILE,  sq-15)) attacks = setBit(attacks, sq-15);
+    if(!getBit(HFILE,  sq-17)) attacks = setBit(attacks, sq-17);
+
+    if(!getBit(GHFILE, sq+6)) attacks = setBit(attacks, sq+6);
+    if(!getBit(ABFILE, sq+10)) attacks = setBit(attacks, sq+10);
+    if(!getBit(HFILE,  sq+15)) attacks = setBit(attacks, sq+15);
+    if(!getBit(AFILE,  sq+17)) attacks = setBit(attacks, sq+17);
+
+    return attacks;
+}
 
 ULL getPawn(int sq, int side) {
     ULL attacks = 0ULL;
@@ -40,7 +56,8 @@ void printBB(ULL bb) {
 }
 
 int main() {
+//    cout << (0 <= -1);
 //    sq 52 = e2
-    printBB(getPawn(52, 0));
+    printBB(getKnight(52));
     return 0;
 }
