@@ -198,6 +198,9 @@ const int rook_relevant_bits[64] = {
         12, 11, 11, 11, 11, 11, 11, 12
 };
 
+ULL pawnMasks[64][2];
+ULL knightMasks[64];
+ULL kingMasks[64];
 ULL rookMasks[64];
 ULL bishopMasks[64];
 ULL bishopAttacks[64][512];
@@ -351,6 +354,22 @@ ULL get_knight(int sq) {
     return attacks;
 }
 
+ULL get_king(int sq) {
+    ULL attacks = 0ULL;
+
+    setBit(attacks, sq-8);
+    if(!getBit(HFILE, sq-9)) setBit(attacks, sq-9);
+    if(!getBit(AFILE,  sq-7)) setBit(attacks, sq-7);
+    if(!getBit(HFILE,  sq-1)) setBit(attacks, sq-1);
+
+    setBit(attacks, sq+8);
+    if(!getBit(AFILE, sq+9)) setBit(attacks, sq+9);
+    if(!getBit(HFILE,  sq+7)) setBit(attacks, sq+7);
+    if(!getBit(AFILE,  sq+1)) setBit(attacks, sq+1);
+
+    return attacks;
+}
+
 ULL get_pawn(int sq, int side) {
     ULL attacks = 0ULL;
     if(side == 0) {
@@ -402,6 +421,9 @@ static inline ULL get_rook_attacks(int square, ULL occupancy) {
 
 void init() {
     for(int sq = 0; sq < 64; sq++) {
+        pawnMasks[sq][0] = get_pawn(sq, 0);
+        pawnMasks[sq][1] = get_pawn(sq, 1);
+        knightMasks[sq] = get_knight(sq);
         bishopMasks[sq] = get_bishop_mask(sq);
         rookMasks[sq] = get_rook_mask(sq);
     }
@@ -410,8 +432,10 @@ void init() {
 }
 
 int main() {
-    init();
-    print_bb(get_bishop_attacks(52, 1ULL << 25ULL));
+//    init();
+//    print_bb(get_bishop_attacks(52, 1ULL << 25ULL));
+
+    print_bb(get_king(h2));
 
     return 0;
 }
